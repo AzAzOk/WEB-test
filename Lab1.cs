@@ -58,34 +58,34 @@ namespace Selenium.LaboratoryWorks
         {
             driver.Navigate().GoToUrl("https://demoqa.com/");
 
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//h5[text()='Elements']")));
-            driver.FindElement(By.XPath("//h5[text()='Elements']")).Click();
+            wait.Until(ExpectedConditions.ElementToBeClickable(
+                By.XPath("//h5[text()='Elements']"))).Click();
 
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Check Box']")));
-            driver.FindElement(By.XPath("//span[text()='Check Box']")).Click();
+            wait.Until(ExpectedConditions.ElementToBeClickable(
+                By.XPath("//span[text()='Check Box']"))).Click();
 
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("button[title='Toggle']")));
-            driver.FindElement(By.CssSelector("button[title='Toggle']")).Click();
+            wait.Until(ExpectedConditions.ElementToBeClickable(
+                By.CssSelector(".rct-option-expand-all"))).Click();
 
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Desktop']/../button")));
-            driver.FindElement(By.XPath("//span[text()='Desktop']/../button")).Click();
-            
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Notes']/../span[@class='rct-checkbox']")));
-            driver.FindElement(By.XPath("//span[text()='Notes']/../span[@class='rct-checkbox']")).Click();
-            
-            driver.FindElement(By.XPath("//span[text()='Documents']/../button")).Click();
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='WorkSpace']/../button")));
-            driver.FindElement(By.XPath("//span[text()='WorkSpace']/../button")).Click();
-            
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Veu']/../span[@class='rct-checkbox']")));
-            driver.FindElement(By.XPath("//span[text()='Veu']/../span[@class='rct-checkbox']")).Click();
-            
-            driver.FindElement(By.XPath("//span[text()='Office']/../button")).Click();
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Private']/../span[@class='rct-checkbox']")));
-            driver.FindElement(By.XPath("//span[text()='Private']/../span[@class='rct-checkbox']")).Click();
+            wait.Until(ExpectedConditions.ElementToBeClickable(
+                By.XPath("//span[text()='Notes']"))).Click();
 
-            driver.FindElement(By.CssSelector("button[title='Toggle']")).Click();
+            wait.Until(ExpectedConditions.ElementToBeClickable(
+                By.XPath("//span[text()='Veu']"))).Click();
+
+            wait.Until(ExpectedConditions.ElementToBeClickable(
+                By.XPath("//span[text()='Private']"))).Click();
+
+            wait.Until(ExpectedConditions.ElementIsVisible(
+                By.Id("result")));
+
+            string resultText = driver.FindElement(By.Id("result")).Text;
+
+            Assert.That(resultText.Contains("notes"), Is.True);
+            Assert.That(resultText.Contains("veu"), Is.True);
+            Assert.That(resultText.Contains("private"), Is.True);
         }
+
 
         [Test]
         public void Test3_RadioButton()

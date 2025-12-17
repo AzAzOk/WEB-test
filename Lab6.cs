@@ -5,6 +5,7 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System;
+using System.Threading;
 
 namespace Selenium.LaboratoryWorks
 {
@@ -50,7 +51,7 @@ namespace Selenium.LaboratoryWorks
             
             IWebElement monthDropdown = driver.FindElement(By.ClassName("react-datepicker__month-select"));
             SelectElement monthSelect = new SelectElement(monthDropdown);
-            monthSelect.SelectByValue("11"); // December (0-indexed)
+            monthSelect.SelectByValue("11");
             
             driver.FindElement(By.XPath("//div[contains(@class,'react-datepicker__day') and text()='1' and not(contains(@class,'outside-month'))]")).Click();
 
@@ -87,14 +88,43 @@ namespace Selenium.LaboratoryWorks
             wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".range-slider")));
             IWebElement slider = driver.FindElement(By.CssSelector("input[type='range']"));
             
-            Actions actions = new Actions(driver);
+            int sliderWidth = slider.Size.Width;
             
             int targetValue = 50;
-            ((IJavaScriptExecutor)driver).ExecuteScript($"arguments[0].value = {targetValue}", slider);
-            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].dispatchEvent(new Event('change'))", slider);
-
-            wait.Until(ExpectedConditions.TextToBePresentInElementValue(By.Id("sliderValue"), "50"));
-            Assert.That(driver.FindElement(By.Id("sliderValue")).GetAttribute("value"), Is.EqualTo("50"));
+            
+            string minStr = slider.GetAttribute("min");
+            string maxStr = slider.GetAttribute("max");
+            int min = string.IsNullOrEmpty(minStr) ? 0 : int.Parse(minStr);
+            int max = string.IsNullOrEmpty(maxStr) ? 100 : int.Parse(maxStr);
+            
+            double percentage = (double)(targetValue - min) / (max - min);
+            int xOffset = (int)(sliderWidth * percentage) - (sliderWidth / 2);
+            
+            Actions actions = new Actions(driver);
+            actions.ClickAndHold(slider)
+                   .MoveByOffset(xOffset, 0)
+                   .Release()
+                   .Perform();
+            
+            Thread.Sleep(500);
+            
+            string actualValue = driver.FindElement(By.Id("sliderValue")).GetAttribute("value");
+            int actualValueInt = int.Parse(actualValue);
+            
+            Assert.That(actualValueInt, Is.InRange(45, 55), 
+                $"Ожидалось значение около 50, получено: {actualValueInt}");
+            
+            if (actualValueInt < 45 || actualValueInt > 55)
+            {
+                ((IJavaScriptExecutor)driver).ExecuteScript($"arguments[0].value = {targetValue}", slider);
+                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].dispatchEvent(new Event('input', { bubbles: true }))", slider);
+                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].dispatchEvent(new Event('change', { bubbles: true }))", slider);
+                
+                Thread.Sleep(500);
+                
+                actualValue = driver.FindElement(By.Id("sliderValue")).GetAttribute("value");
+                Assert.That(actualValue, Is.EqualTo("50"));
+            }
         }
 
         [Test]

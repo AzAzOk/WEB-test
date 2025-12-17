@@ -4,6 +4,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System;
+using System.Threading;
 
 namespace Selenium.LaboratoryWorks
 {
@@ -61,17 +62,25 @@ namespace Selenium.LaboratoryWorks
             wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Accordian']")));
             driver.FindElement(By.XPath("//span[text()='Accordian']")).Click();
 
+            Thread.Sleep(1000);
+            
             wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("section1Heading")));
             
             wait.Until(ExpectedConditions.ElementIsVisible(By.Id("section1Content")));
             Assert.That(driver.FindElement(By.Id("section1Content")).Text.Contains("Lorem Ipsum"), Is.True);
 
-            driver.FindElement(By.Id("section2Heading")).Click();
+            IWebElement section2Heading = driver.FindElement(By.Id("section2Heading"));
+            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", section2Heading);
+            Thread.Sleep(500);
+            section2Heading.Click();
 
             wait.Until(ExpectedConditions.ElementIsVisible(By.Id("section2Content")));
             Assert.That(driver.FindElement(By.Id("section2Content")).Text.Length > 0, Is.True);
 
-            driver.FindElement(By.Id("section3Heading")).Click();
+            IWebElement section3Heading = driver.FindElement(By.Id("section3Heading"));
+            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", section3Heading);
+            Thread.Sleep(500);
+            section3Heading.Click();
 
             wait.Until(ExpectedConditions.ElementIsVisible(By.Id("section3Content")));
             Assert.That(driver.FindElement(By.Id("section3Content")).Text.Length > 0, Is.True);
@@ -88,31 +97,51 @@ namespace Selenium.LaboratoryWorks
             wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Auto Complete']")));
             driver.FindElement(By.XPath("//span[text()='Auto Complete']")).Click();
 
+            Thread.Sleep(1000);
+
             wait.Until(ExpectedConditions.ElementIsVisible(By.Id("autoCompleteMultipleInput")));
             IWebElement multiInput = driver.FindElement(By.Id("autoCompleteMultipleInput"));
             
-            multiInput.SendKeys("Black");
-            wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[text()='Black']")));
-            driver.FindElement(By.XPath("//div[text()='Black']")).Click();
+            multiInput.Click();
+            multiInput.SendKeys("Bl");
+            Thread.Sleep(500);
+            wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class,'auto-complete__option') and text()='Black']")));
+            driver.FindElement(By.XPath("//div[contains(@class,'auto-complete__option') and text()='Black']")).Click();
+            Thread.Sleep(500);
             
-            multiInput.SendKeys("Red");
-            wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[text()='Red']")));
-            driver.FindElement(By.XPath("//div[text()='Red']")).Click();
+            multiInput = driver.FindElement(By.Id("autoCompleteMultipleInput"));
+            multiInput.Click();
+            multiInput.SendKeys("Re");
+            Thread.Sleep(500);
+            wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class,'auto-complete__option') and text()='Red']")));
+            driver.FindElement(By.XPath("//div[contains(@class,'auto-complete__option') and text()='Red']")).Click();
+            Thread.Sleep(500);
             
-            multiInput.SendKeys("Magenta");
-            wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[text()='Magenta']")));
-            driver.FindElement(By.XPath("//div[text()='Magenta']")).Click();
+            multiInput = driver.FindElement(By.Id("autoCompleteMultipleInput"));
+            multiInput.Click();
+            multiInput.SendKeys("Ma");
+            Thread.Sleep(500);
+            wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class,'auto-complete__option') and text()='Magenta']")));
+            driver.FindElement(By.XPath("//div[contains(@class,'auto-complete__option') and text()='Magenta']")).Click();
+            Thread.Sleep(500);
 
             IWebElement singleInput = driver.FindElement(By.Id("autoCompleteSingleInput"));
-            singleInput.SendKeys("Black");
-            wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[text()='Black']")));
-            driver.FindElement(By.XPath("//div[text()='Black']")).Click();
+            singleInput.Click();
+            singleInput.SendKeys("Bl");
+            Thread.Sleep(500);
+            wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class,'auto-complete__option') and text()='Black']")));
+            driver.FindElement(By.XPath("//div[contains(@class,'auto-complete__option') and text()='Black']")).Click();
+            Thread.Sleep(500);
 
             singleInput = driver.FindElement(By.Id("autoCompleteSingleInput"));
-            singleInput.Clear();
-            singleInput.SendKeys("Red");
-            wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[text()='Red']")));
-            driver.FindElement(By.XPath("//div[text()='Red']")).Click();
+            singleInput.Click();
+            singleInput.SendKeys(Keys.Control + "a");
+            singleInput.SendKeys(Keys.Delete);
+            Thread.Sleep(300);
+            singleInput.SendKeys("Re");
+            Thread.Sleep(500);
+            wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class,'auto-complete__option') and text()='Red']")));
+            driver.FindElement(By.XPath("//div[contains(@class,'auto-complete__option') and text()='Red']")).Click();
         }
     }
 }
