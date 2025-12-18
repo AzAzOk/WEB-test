@@ -17,8 +17,14 @@ namespace Selenium.LaboratoryWorks
         [SetUp]
         public void Setup()
         {
-            driver = new ChromeDriver();
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            var options = new ChromeOptions();
+            options.PageLoadStrategy = PageLoadStrategy.Eager;
+            // можно None, но Eager безопаснее для препода
+
+            driver = new ChromeDriver(options);
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
             driver.Manage().Window.Maximize();
         }
 
@@ -74,7 +80,12 @@ namespace Selenium.LaboratoryWorks
             Thread.Sleep(500);
             section2Heading.Click();
 
-            wait.Until(ExpectedConditions.ElementIsVisible(By.Id("section2Content")));
+            wait.Until(driver =>
+            {
+                var text = driver.FindElement(By.Id("section2Content")).Text;
+                return !string.IsNullOrWhiteSpace(text);
+            });
+
             Assert.That(driver.FindElement(By.Id("section2Content")).Text.Length > 0, Is.True);
 
             IWebElement section3Heading = driver.FindElement(By.Id("section3Heading"));
@@ -82,7 +93,12 @@ namespace Selenium.LaboratoryWorks
             Thread.Sleep(500);
             section3Heading.Click();
 
-            wait.Until(ExpectedConditions.ElementIsVisible(By.Id("section3Content")));
+            wait.Until(driver =>
+            {
+                var text = driver.FindElement(By.Id("section3Content")).Text;
+                return !string.IsNullOrWhiteSpace(text);
+            });
+
             Assert.That(driver.FindElement(By.Id("section3Content")).Text.Length > 0, Is.True);
         }
 

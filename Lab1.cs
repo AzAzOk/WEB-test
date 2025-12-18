@@ -16,8 +16,13 @@ namespace Selenium.LaboratoryWorks
         [SetUp]
         public void Setup()
         {
-            driver = new ChromeDriver();
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            var options = new ChromeOptions();
+            options.PageLoadStrategy = PageLoadStrategy.Eager;
+
+            driver = new ChromeDriver(options);
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(120);
             driver.Manage().Window.Maximize();
         }
 

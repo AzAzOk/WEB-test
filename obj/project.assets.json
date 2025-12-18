@@ -1669,11 +1669,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\A\\Programm_work\\Selenium\\Selenium\\Selenium.csproj",
+      "projectUniqueName": "C:\\A\\Programm_work\\Python\\WEB-test\\Selenium.csproj",
       "projectName": "Selenium",
-      "projectPath": "C:\\A\\Programm_work\\Selenium\\Selenium\\Selenium.csproj",
+      "projectPath": "C:\\A\\Programm_work\\Python\\WEB-test\\Selenium.csproj",
       "packagesPath": "C:\\Users\\dogs0\\.nuget\\packages\\",
-      "outputPath": "C:\\A\\Programm_work\\Selenium\\Selenium\\obj\\",
+      "outputPath": "C:\\A\\Programm_work\\Python\\WEB-test\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\dogs0\\AppData\\Roaming\\NuGet\\NuGet.Config"

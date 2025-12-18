@@ -12,29 +12,49 @@ namespace Selenium.LaboratoryWorks
     [TestFixture]
     public class Lab6
     {
-        private IWebDriver driver;
-        private WebDriverWait wait;
+        private IWebDriver? driver;
+        private WebDriverWait? wait;
 
         [SetUp]
         public void Setup()
         {
-            driver = new ChromeDriver();
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            var options = new ChromeOptions();
+            options.AddArgument("--disable-blink-features=AutomationControlled");
+            options.AddArgument("--start-maximized");
+            
+            driver = new ChromeDriver(options);
+            
+            // Отключаем PageLoad timeout - полагаемся на явные WebDriverWait
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
+            
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
             driver.Manage().Window.Maximize();
         }
 
         [TearDown]
         public void TearDown()
         {
+            if (driver != null)
+            {
+                try
+                {
+                    driver.Quit();
+                }
+                catch
+                {
+                    // Игнорируем ошибки при закрытии
+                }
+            }
             driver?.Dispose();
         }
 
         [Test]
         public void Test16_DatePicker()
         {
-            driver.Navigate().GoToUrl("https://demoqa.com/");
+            driver!.Navigate().GoToUrl("https://demoqa.com/");
+            Thread.Sleep(3000); // Даём странице время на полную загрузку
 
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//h5[text()='Widgets']")));
+            wait!.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//h5[text()='Widgets']")));
             driver.FindElement(By.XPath("//h5[text()='Widgets']")).Click();
 
             wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Date Picker']")));
@@ -55,6 +75,7 @@ namespace Selenium.LaboratoryWorks
             
             driver.FindElement(By.XPath("//div[contains(@class,'react-datepicker__day') and text()='1' and not(contains(@class,'outside-month'))]")).Click();
 
+            Thread.Sleep(500);
             driver.FindElement(By.Id("dateAndTimePickerInput")).Click();
             
             wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("react-datepicker")));
@@ -77,9 +98,10 @@ namespace Selenium.LaboratoryWorks
         [Test]
         public void Test17_Slider()
         {
-            driver.Navigate().GoToUrl("https://demoqa.com/");
+            driver!.Navigate().GoToUrl("https://demoqa.com/");
+            Thread.Sleep(3000);
 
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//h5[text()='Widgets']")));
+            wait!.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//h5[text()='Widgets']")));
             driver.FindElement(By.XPath("//h5[text()='Widgets']")).Click();
 
             wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Slider']")));
@@ -130,9 +152,10 @@ namespace Selenium.LaboratoryWorks
         [Test]
         public void Test18_Tabs()
         {
-            driver.Navigate().GoToUrl("https://demoqa.com/");
+            driver!.Navigate().GoToUrl("https://demoqa.com/");
+            Thread.Sleep(3000);
 
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//h5[text()='Widgets']")));
+            wait!.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//h5[text()='Widgets']")));
             driver.FindElement(By.XPath("//h5[text()='Widgets']")).Click();
 
             wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Tabs']")));
